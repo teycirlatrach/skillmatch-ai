@@ -1,0 +1,77 @@
+:root{
+  --c-olive: #6B7C1E;
+  --c-green: #8EB06A;
+  --c-sky:   #B9DDEB;
+  --c-sand:  #EAD26A;
+  --c-sun:   #F0C200;
+
+  --bg1:#070A12;
+  --bg2:#050711;
+
+  --border: rgba(255,255,255,.12);
+  --glass: rgba(255,255,255,.10);
+  --text: rgba(255,255,255,.92);
+}
+
+.ui-page{
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  color: var(--text);
+}
+
+.ui-bg{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(1200px 700px at 10% 10%, var(--c-sky), transparent 60%),
+    radial-gradient(900px 600px at 90% 20%, var(--c-sand), transparent 55%),
+    radial-gradient(900px 650px at 30% 95%, var(--c-green), transparent 55%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+
+.ui-container{
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 24px;
+}
+
+.card-glass{
+  border-radius: 28px;
+  border: 1px solid var(--border);
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 24px;
+  max-width: 520px;
+  width: 100%;
+}
+
+.btn-gradient{
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  font-weight: 800;
+  border: 0;
+  cursor: pointer;
+  color: #0b1020;
+  background: linear-gradient(90deg,var(--c-olive),var(--c-green),var(--c-sand),var(--c-sun));
+}
+
+.input-ui{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(0,0,0,.30);
+  border: 1px solid var(--border);
+  color: white;
+  outline: none;
+}
+.input-ui:focus{
+  border-color: rgba(185,221,235,.8);
+  box-shadow: 0 0 0 4px rgba(185,221,235,.18);
+}
