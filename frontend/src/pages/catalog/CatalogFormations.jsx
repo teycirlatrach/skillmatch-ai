@@ -23,50 +23,66 @@ export default function CatalogFormations() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <h1 className="text-2xl font-bold">Formations Catalog</h1>
-          <div className="flex gap-2">
-            <Link to="/dashboard" className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">Back</Link>
-            <Link to="/catalog/careers" className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">Careers</Link>
-            <Link to="/catalog/pfe" className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">PFE</Link>
+    <div className="ui-page">
+      <div className="ui-bg"></div>
+      <div className="ui-container">
+        <div className="card-glass">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+            <h1 className="text-2xl font-bold text-white">Formations Catalog</h1>
+            <div className="flex gap-2">
+              <Link to="/dashboard" className="btn-gradient">
+                Back
+              </Link>
+              <Link to="/catalog/careers" className="btn-gradient">
+                Careers
+              </Link>
+              <Link to="/catalog/pfe" className="btn-gradient">
+                PFE
+              </Link>
+            </div>
           </div>
+
+          {err && (
+            <div className="mb-4 p-4 rounded-xl bg-red-900/30 border border-red-700/50">
+              <p className="text-red-200">{err}</p>
+            </div>
+          )}
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {rows.map((f) => {
+              const key = `FORMATION:${f._id}`;
+              const already = favSet.has(key);
+
+              return (
+                <div key={f._id} className="p-5 rounded-2xl bg-slate-900/50 border border-white/10">
+                  <p className="font-bold text-white">{f.title}</p>
+                  <p className="text-sm text-white/40 mt-1">
+                    Provider: {f.provider || "—"} • Duration: {f.durationWeeks ? `${f.durationWeeks} weeks` : "—"}
+                  </p>
+
+                  <button
+                    disabled={already}
+                    onClick={async () => {
+                      await api.post("/favorites", { kind: "FORMATION", itemId: f._id, title: f.title });
+                      setFavSet((prev) => new Set(prev).add(key));
+                    }}
+                    className={`mt-4 px-4 py-2 rounded-xl font-semibold transition-colors ${
+                      already
+                        ? "bg-slate-800/50 opacity-60 cursor-not-allowed"
+                        : "bg-amber-600 hover:bg-amber-500"
+                    }`}
+                  >
+                    {already ? "⭐ Added to Favorites" : "⭐ Add to Favorites"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {rows.length === 0 && !err && (
+            <p className="text-white/60 py-6 text-center">No formations found.</p>
+          )}
         </div>
-
-        {err && <div className="mt-4 p-3 rounded-xl bg-red-950 border border-red-900 text-red-200">{err}</div>}
-
-        <div className="mt-6 grid md:grid-cols-2 gap-4">
-          {rows.map((f) => {
-            const key = `FORMATION:${f._id}`;
-            const already = favSet.has(key);
-
-            return (
-              <div key={f._id} className="p-5 rounded-2xl bg-slate-900 border border-slate-800">
-                <p className="font-bold">{f.title}</p>
-                <p className="text-sm text-slate-400 mt-1">
-                  Provider: {f.provider || "—"} • Duration: {f.durationWeeks ? `${f.durationWeeks} weeks` : "—"}
-                </p>
-
-                <button
-                  disabled={already}
-                  onClick={async () => {
-                    await api.post("/favorites", { kind: "FORMATION", itemId: f._id, title: f.title });
-                    setFavSet((prev) => new Set(prev).add(key));
-                  }}
-                  className={
-                    "mt-4 px-4 py-2 rounded-xl font-semibold " +
-                    (already ? "bg-slate-800 opacity-60 cursor-not-allowed" : "bg-amber-600 hover:bg-amber-500")
-                  }
-                >
-                  {already ? "⭐ Added" : "⭐ Add to Favorites"}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-
-        {rows.length === 0 && !err && <p className="mt-6 text-slate-400">No formations found.</p>}
       </div>
     </div>
   );

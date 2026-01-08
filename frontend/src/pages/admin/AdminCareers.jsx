@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import api from "../../lib/api";
-import AdminLayout from "../../components/AdminLayout";
+import { Link } from "react-router-dom";
 
 export default function AdminCareers() {
   const [careers, setCareers] = useState([]);
@@ -48,107 +48,122 @@ export default function AdminCareers() {
   useEffect(() => { load(); }, []);
 
   return (
-    <AdminLayout title="Admin — Careers">
-      {err && <ErrorBox msg={err} />}
+    <div className="ui-page">
+      <div className="ui-bg"></div>
+      <div className="ui-container">
+        <div className="card-glass">
+          {/* HEADER WITH BACK BUTTON */}
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+            <div>
+              <h1 className="text-2xl font-bold text-white">Admin — Careers</h1>
+              <p className="text-white/60 mt-1">Create and manage careers with required skills</p>
+            </div>
+            <Link to="/admin" className="btn-gradient">
+              ← Back to Admin
+            </Link>
+          </div>
 
-      <div className="grid lg:grid-cols-2 gap-4">
-        {/* LEFT: Careers list + create */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-          <h2 className="font-bold">Create Career</h2>
+          {err && <ErrorBox msg={err} />}
 
-          <form onSubmit={createCareer} className="mt-3 space-y-2">
-            <input
-              className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800"
-              placeholder="Title (e.g. Full-Stack Developer)"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <input
-              className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800"
-              placeholder="Domain (e.g. Web, BI, Security)"
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-            />
-            <textarea
-              className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800"
-              placeholder="Description"
-              rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <button className="w-full p-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold">
-              Add Career
-            </button>
-          </form>
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* LEFT: Careers list + create */}
+            <div className="p-5 rounded-2xl bg-slate-900/50 border border-white/10">
+              <h2 className="font-bold text-white mb-3">Create Career</h2>
 
-          <h2 className="font-bold mt-6">Careers</h2>
-          <div className="mt-3 space-y-2">
-            {careers.map((c) => (
-              <button
-                key={c._id}
-                onClick={() => setSelectedCareerId(c._id)}
-                className={[
-                  "w-full text-left p-3 rounded-xl border",
-                  c._id === selectedCareerId
-                    ? "bg-slate-950 border-indigo-600"
-                    : "bg-slate-950 border-slate-800 hover:border-slate-700",
-                ].join(" ")}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <p className="font-semibold">{c.title}</p>
-                    <p className="text-xs text-slate-400">{c.domain}</p>
+              <form onSubmit={createCareer} className="space-y-3 mb-6">
+                <input
+                  className="w-full p-3 rounded-xl bg-slate-900 border border-white/10 text-white"
+                  placeholder="Title (e.g. Full-Stack Developer)"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                <input
+                  className="w-full p-3 rounded-xl bg-slate-900 border border-white/10 text-white"
+                  placeholder="Domain (e.g. Web, BI, Security)"
+                  value={domain}
+                  onChange={(e) => setDomain(e.target.value)}
+                />
+                <textarea
+                  className="w-full p-3 rounded-xl bg-slate-900 border border-white/10 text-white"
+                  placeholder="Description"
+                  rows={3}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <button className="w-full p-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold transition-colors">
+                  Add Career
+                </button>
+              </form>
+
+              <h2 className="font-bold text-white mb-3">Careers</h2>
+              <div className="space-y-2">
+                {careers.map((c) => (
+                  <button
+                    key={c._id}
+                    onClick={() => setSelectedCareerId(c._id)}
+                    className={`w-full text-left p-3 rounded-xl border transition-colors ${
+                      c._id === selectedCareerId
+                        ? "bg-slate-900 border-indigo-600"
+                        : "bg-slate-900/50 border-white/10 hover:border-white/20"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <p className="font-semibold text-white">{c.title}</p>
+                        <p className="text-xs text-white/40">{c.domain}</p>
+                      </div>
+                      <span className="text-xs text-white/40">Select</span>
+                    </div>
+                  </button>
+                ))}
+                {careers.length === 0 && (
+                  <p className="text-white/40 text-sm">No careers yet.</p>
+                )}
+              </div>
+            </div>
+
+            {/* RIGHT: Career details + required skills */}
+            <div className="p-5 rounded-2xl bg-slate-900/50 border border-white/10">
+              <h2 className="font-bold text-white mb-3">Career Details</h2>
+
+              {!selectedCareer ? (
+                <p className="text-white/40">Select a career on the left.</p>
+              ) : (
+                <>
+                  <div className="mb-6 p-4 rounded-xl bg-slate-900/30 border border-white/5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-semibold text-white">{selectedCareer.title}</p>
+                        <p className="text-xs text-white/40">{selectedCareer.domain}</p>
+                        <p className="text-sm text-white/60 mt-2">{selectedCareer.description || "—"}</p>
+                      </div>
+                      <button
+                        onClick={() => deleteCareer(selectedCareer._id)}
+                        className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                  <span className="text-xs text-slate-400">Select</span>
-                </div>
-              </button>
-            ))}
-            {careers.length === 0 && (
-              <p className="text-slate-400 text-sm">No careers yet.</p>
-            )}
+
+                  <CareerSkillsPanel
+                    careerId={selectedCareer._id}
+                    allSkills={skills}
+                  />
+                </>
+              )}
+            </div>
           </div>
         </div>
-
-        {/* RIGHT: Career details + required skills */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-          <h2 className="font-bold">Career Details</h2>
-
-          {!selectedCareer ? (
-            <p className="text-slate-400 mt-3">Select a career on the left.</p>
-          ) : (
-            <>
-              <div className="mt-3 p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-semibold">{selectedCareer.title}</p>
-                    <p className="text-xs text-slate-400">{selectedCareer.domain}</p>
-                    <p className="text-sm text-slate-300 mt-2">{selectedCareer.description || "—"}</p>
-                  </div>
-                  <button
-                    onClick={() => deleteCareer(selectedCareer._id)}
-                    className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-
-              <CareerSkillsPanel
-                careerId={selectedCareer._id}
-                allSkills={skills}
-              />
-            </>
-          )}
-        </div>
       </div>
-    </AdminLayout>
+    </div>
   );
 }
 
 function ErrorBox({ msg }) {
   return (
-    <div className="mb-4 p-3 rounded-xl bg-red-950 border border-red-900 text-red-200">
-      {msg}
+    <div className="mb-6 p-3 rounded-xl bg-red-900/30 border border-red-700/50">
+      <p className="text-red-200">{msg}</p>
     </div>
   );
 }
@@ -194,14 +209,14 @@ function CareerSkillsPanel({ careerId, allSkills }) {
   useEffect(() => { load(); }, [careerId, allSkills]);
 
   return (
-    <div className="mt-4">
-      <h3 className="font-bold">Required Skills</h3>
+    <div>
+      <h3 className="font-bold text-white mb-3">Required Skills</h3>
 
       {err && <ErrorBox msg={err} />}
 
-      <form onSubmit={add} className="mt-3 grid md:grid-cols-4 gap-2">
+      <form onSubmit={add} className="grid md:grid-cols-4 gap-2 mb-4">
         <select
-          className="p-3 rounded-xl bg-slate-950 border border-slate-800"
+          className="p-3 rounded-xl bg-slate-900 border border-white/10 text-white"
           value={skillId}
           onChange={(e) => setSkillId(e.target.value)}
         >
@@ -213,7 +228,7 @@ function CareerSkillsPanel({ careerId, allSkills }) {
         </select>
 
         <select
-          className="p-3 rounded-xl bg-slate-950 border border-slate-800"
+          className="p-3 rounded-xl bg-slate-900 border border-white/10 text-white"
           value={minLevel}
           onChange={(e) => setMinLevel(e.target.value)}
         >
@@ -225,7 +240,7 @@ function CareerSkillsPanel({ careerId, allSkills }) {
         </select>
 
         <input
-          className="p-3 rounded-xl bg-slate-950 border border-slate-800"
+          className="p-3 rounded-xl bg-slate-900 border border-white/10 text-white"
           type="number"
           step="0.05"
           min="0"
@@ -235,29 +250,29 @@ function CareerSkillsPanel({ careerId, allSkills }) {
           placeholder="Weight (0..1)"
         />
 
-        <button className="p-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold">
+        <button className="p-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold transition-colors">
           Add
         </button>
       </form>
 
-      <div className="mt-3 space-y-2">
+      <div className="space-y-2">
         {items.map((x) => (
-          <div key={x._id} className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="flex items-center justify-between gap-2">
+          <div key={x._id} className="p-3 rounded-xl bg-slate-900/30 border border-white/5">
+            <div className="flex items-center justify-between gap-2 mb-2">
               <div>
-                <p className="font-semibold text-sm">{x.skillId?.name || "Skill"}</p>
-                <p className="text-xs text-slate-400">
+                <p className="font-semibold text-sm text-white">{x.skillId?.name || "Skill"}</p>
+                <p className="text-xs text-white/40">
                   minLevel: {x.minLevel} • weight: {x.weight}
                 </p>
               </div>
-              <button onClick={() => remove(x._id)} className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">
+              <button onClick={() => remove(x._id)} className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition-colors">
                 Delete
               </button>
             </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <select
-                className="p-2 rounded-xl bg-slate-900 border border-slate-800"
+                className="p-2 rounded-xl bg-slate-900 border border-white/10 text-white"
                 value={x.minLevel}
                 onChange={(e) => update(x._id, { skillId: x.skillId?._id || x.skillId, minLevel: Number(e.target.value), weight: x.weight })}
               >
@@ -269,7 +284,7 @@ function CareerSkillsPanel({ careerId, allSkills }) {
               </select>
 
               <input
-                className="p-2 rounded-xl bg-slate-900 border border-slate-800"
+                className="p-2 rounded-xl bg-slate-900 border border-white/10 text-white"
                 type="number"
                 step="0.05"
                 min="0"
@@ -282,7 +297,7 @@ function CareerSkillsPanel({ careerId, allSkills }) {
         ))}
 
         {items.length === 0 && (
-          <p className="text-slate-400 text-sm mt-2">
+          <p className="text-white/40 text-sm">
             No required skills yet. Add at least 3 skills with weights.
           </p>
         )}

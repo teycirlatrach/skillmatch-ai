@@ -75,3 +75,22 @@
   border-color: rgba(185,221,235,.8);
   box-shadow: 0 0 0 4px rgba(185,221,235,.18);
 }
+/* Pour assurer que le contenu utilise toute la largeur */
+.min-h-screen {
+  min-height: 100vh;
+}
+
+/* Pour un défilement fluide */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Pour les cartes de skills */
+.skill-card {
+  transition: all 0.2s ease;
+}
+
+.skill-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
